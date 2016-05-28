@@ -10,8 +10,8 @@
 
 You have two ways to set the four input values the tool needs.
 
-1. Using evironment variables  
-```
+### Using evironment variables  
+```bash
 # export VAULT_ADDR="https://127.0.0.1:8200"
 # export VAULT_APP_ID="29c8febe-49f5-4620-a177-20dff0fda2da"
 # export VAULT_USER_ID="54d24f66-6ecb-4dcc-bdb7-0241a955f1df"
@@ -22,8 +22,9 @@ export SECOND_KEY="secondvalue"
 # echo "${FIRST_KEY}"
 firstvalue
 ```
-2. Using CLI parameters  
-```
+
+### Using CLI parameters  
+```bash
 # vault2env --vault-addr="..." --vault-app-id="..." --vault-user-id="..." secret/my/path/with/keys
 export FIRST_KEY="firstvalue"
 export SECOND_KEY="secondvalue"
