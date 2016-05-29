@@ -55,17 +55,17 @@ func main() {
 	}
 
 	if cfg.VaultToken == "" {
-		loginSecret, err := client.Logical().Write("auth/app-id/login/"+cfg.VaultAppID, map[string]interface{}{
+		loginSecret, lserr := client.Logical().Write("auth/app-id/login/"+cfg.VaultAppID, map[string]interface{}{
 			"user_id": cfg.VaultUserID,
 		})
-		if err != nil || loginSecret.Auth == nil {
-			log.Fatalf("Unable to fetch authentication token: %s", err)
+		if lserr != nil || loginSecret.Auth == nil {
+			log.Fatalf("Unable to fetch authentication token: %s", lserr)
 		}
 
 		client.SetToken(loginSecret.Auth.ClientToken)
 		defer client.Auth().Token().RevokeSelf(client.Token())
 	} else {
-		client.SetToken(cfg.Token)
+		client.SetToken(cfg.VaultToken)
 	}
 
 	data, err := client.Logical().Read(rconfig.Args()[1])
