@@ -1,3 +1,7 @@
+# 0.3.0 / 2016-05-29
+
+  * Enable token auth
+
 # 0.2.0 / 2016-05-29
 
   * Added command execution in addition to execution
