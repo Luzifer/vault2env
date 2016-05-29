@@ -8,7 +8,15 @@
 
 ## Usage
 
-You have two ways to set the four input values the tool needs.
+In general this program can either output your ENV variables to use with `eval` or similar or it can run a program with populated environment.
+
+```
+# vault2env [secret path] [command]
+<program is started, you see its output>
+
+# vault2env --export [secret path]
+export ...
+```
 
 ### Using evironment variables  
 ```bash
