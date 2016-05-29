@@ -4,7 +4,7 @@
 
 # Luzifer / vault2env
 
-`vault2env` is a really small utility to transfer fields of a key in [Vault](https://www.vaultproject.io/) into the environment. It uses the [`app-id` authentication mechanism](https://www.vaultproject.io/docs/auth/app-id.html) to identify itself with the Vault server, fetches all fields in the specified key and returns export directives for bash / zsh. That way you can do `eval` stuff and pull those fields into your ENV.
+`vault2env` is a really small utility to transfer fields of a key in [Vault](https://www.vaultproject.io/) into the environment. It uses the [`app-id` authentication mechanism](https://www.vaultproject.io/docs/auth/app-id.html) or simple [token authentication](https://www.vaultproject.io/docs/auth/token.html) to identify itself with the Vault server, fetches all fields in the specified key and returns export directives for bash / zsh. That way you can do `eval` stuff and pull those fields into your ENV.
 
 ## Usage
 
@@ -39,3 +39,7 @@ export SECOND_KEY="secondvalue"
 ```
 
 Though it's possible to use CLI parameters I strongly recommend to stick to the ENV variant as it's possible under certain conditions to read CLI parameters on a shared system using for example `ps aux`.
+
+### Using a token instead of app-id authentication
+
+This is quite simple: Omit parameters `--vault-app-id` and `--vault-user-id` and their respective ENV variables but set `VAULT_TOKEN` or `--vault-token`.

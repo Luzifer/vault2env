@@ -16,6 +16,7 @@ var (
 		VaultAddress   string `flag:"vault-addr" env:"VAULT_ADDR" default:"https://127.0.0.1:8200" description:"Vault API address"`
 		VaultAppID     string `flag:"vault-app-id" env:"VAULT_APP_ID" default:"" description:"The app-id to use for authentication"`
 		VaultUserID    string `flag:"vault-user-id" env:"VAULT_USER_ID" default:"" description:"The user-id to use for authentication"`
+		VaultToken     string `flag:"vault-token" env:"VAULT_TOKEN" default:"" description:"Specify a token to use instead of app-id auth"`
 		Export         bool   `flag:"export,e" default:"false" description:"Show export statements instead of running the command specified"`
 		VersionAndExit bool   `flag:"version" default:"false" description:"Print program version and exit"`
 	}{}
@@ -30,8 +31,8 @@ func init() {
 		os.Exit(0)
 	}
 
-	if cfg.VaultAppID == "" || cfg.VaultUserID == "" {
-		log.Fatalf("[ERR] You need to set vault-app-id and vault-user-id")
+	if (cfg.VaultAppID == "" || cfg.VaultUserID == "") && cfg.VaultToken == "" {
+		log.Fatalf("[ERR] You need to either set vault-app-id and vault-user-id or set vault-token")
 	}
 
 	if cfg.Export {
@@ -53,15 +54,19 @@ func main() {
 		log.Fatalf("Unable to create client: %s", err)
 	}
 
-	loginSecret, err := client.Logical().Write("auth/app-id/login/"+cfg.VaultAppID, map[string]interface{}{
-		"user_id": cfg.VaultUserID,
-	})
-	if err != nil || loginSecret.Auth == nil {
-		log.Fatalf("Unable to fetch authentication token: %s", err)
-	}
+	if cfg.VaultToken == "" {
+		loginSecret, err := client.Logical().Write("auth/app-id/login/"+cfg.VaultAppID, map[string]interface{}{
+			"user_id": cfg.VaultUserID,
+		})
+		if err != nil || loginSecret.Auth == nil {
+			log.Fatalf("Unable to fetch authentication token: %s", err)
+		}
 
-	client.SetToken(loginSecret.Auth.ClientToken)
-	defer client.Auth().Token().RevokeSelf(client.Token())
+		client.SetToken(loginSecret.Auth.ClientToken)
+		defer client.Auth().Token().RevokeSelf(client.Token())
+	} else {
+		client.SetToken(cfg.Token)
+	}
 
 	data, err := client.Logical().Read(rconfig.Args()[1])
 	if err != nil {
