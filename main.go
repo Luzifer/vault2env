@@ -85,7 +85,7 @@ func main() {
 		emap[k] = v.(string)
 	}
 
-	cmd := exec.Command(rconfig.Args()[2], rconfig.Args()[2:]...)
+	cmd := exec.Command(rconfig.Args()[2], rconfig.Args()[3:]...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
