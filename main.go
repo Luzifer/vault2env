@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -9,6 +10,7 @@ import (
 	"github.com/Luzifer/go_helpers/env"
 	"github.com/Luzifer/rconfig"
 	"github.com/hashicorp/vault/api"
+	"github.com/mitchellh/go-homedir"
 )
 
 var (
@@ -16,14 +18,31 @@ var (
 		VaultAddress   string `flag:"vault-addr" env:"VAULT_ADDR" default:"https://127.0.0.1:8200" description:"Vault API address"`
 		VaultAppID     string `flag:"vault-app-id" env:"VAULT_APP_ID" default:"" description:"The app-id to use for authentication"`
 		VaultUserID    string `flag:"vault-user-id" env:"VAULT_USER_ID" default:"" description:"The user-id to use for authentication"`
-		VaultToken     string `flag:"vault-token" env:"VAULT_TOKEN" default:"" description:"Specify a token to use instead of app-id auth"`
+		VaultToken     string `flag:"vault-token" env:"VAULT_TOKEN" vardefault:"vault-token" description:"Specify a token to use instead of app-id auth"`
 		Export         bool   `flag:"export,e" default:"false" description:"Show export statements instead of running the command specified"`
 		VersionAndExit bool   `flag:"version" default:"false" description:"Print program version and exit"`
 	}{}
 	version = "dev"
 )
 
+func vaultTokenFromDisk() string {
+	vf, err := homedir.Expand("~/.vault-token")
+	if err != nil {
+		return ""
+	}
+
+	data, err := ioutil.ReadFile(vf)
+	if err != nil {
+		return ""
+	}
+
+	return string(data)
+}
+
 func init() {
+	rconfig.SetVariableDefaults(map[string]string{
+		"vault-token": vaultTokenFromDisk(),
+	})
 	rconfig.Parse(&cfg)
 
 	if cfg.VersionAndExit {
