@@ -1,3 +1,7 @@
+# 0.4.1 / 2016-06-25
+
+  * Fix: Updated godeps
+
 # 0.4.0 / 2016-06-25
 
   * If not specified use token from ~/.vault-token
