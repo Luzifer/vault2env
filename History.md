@@ -1,3 +1,7 @@
+# 0.4.0 / 2016-06-25
+
+  * If not specified use token from ~/.vault-token
+
 # 0.3.1 / 2016-05-29
 
   * Fix: Remove program name from program args
