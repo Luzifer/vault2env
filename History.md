@@ -1,3 +1,7 @@
+# 0.4.2 / 2016-06-25
+
+  * Fix: Added godeps
+
 # 0.4.1 / 2016-06-25
 
   * Fix: Updated godeps
