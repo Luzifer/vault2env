@@ -1,3 +1,7 @@
+# 0.5.0 / 2016-09-18
+
+  * Add support for AppRole authentication
+
 # 0.4.2 / 2016-06-25
 
   * Fix: Added godeps
