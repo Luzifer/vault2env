@@ -1,3 +1,7 @@
+# 0.6.0 / 2016-10-04
+
+  * Add transform feature to rename keys from Vault
+
 # 0.5.0 / 2016-09-18
 
   * Add support for AppRole authentication
