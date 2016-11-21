@@ -1,3 +1,7 @@
+# 0.6.1 / 2016-11-21
+
+  * Add github publishing
+
 # 0.6.0 / 2016-10-04
 
   * Add transform feature to rename keys from Vault
