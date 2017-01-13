@@ -23,10 +23,10 @@ export ...
 # export VAULT_ADDR="https://127.0.0.1:8200"
 # export VAULT_APP_ID="29c8febe-49f5-4620-a177-20dff0fda2da"
 # export VAULT_USER_ID="54d24f66-6ecb-4dcc-bdb7-0241a955f1df"
-# vault2env secret/my/path/with/keys
+# vault2env --export secret/my/path/with/keys
 export FIRST_KEY="firstvalue"
 export SECOND_KEY="secondvalue"
-# eval $(vault2env secret/my/path/with/keys)
+# eval $(vault2env --export secret/my/path/with/keys)
 # echo "${FIRST_KEY}"
 firstvalue
 ```
