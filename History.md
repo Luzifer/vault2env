@@ -1,3 +1,7 @@
+# 1.0.1 / 2017-04-21
+
+  * Fix: Update vendored libraries
+
 # 1.0.0 / 2017-04-21
 
 This version introduces a breaking change: The vault keys are no longer provided as arguments to the command but as parameters. Also this introduces the potential to supply multiple vault keys. Their contents will be combined and supplied as environment variables to the executed command or the export statements.
