@@ -17,11 +17,7 @@ import (
 var (
 	cfg = struct {
 		VaultAddress string `flag:"vault-addr" env:"VAULT_ADDR" default:"https://127.0.0.1:8200" description:"Vault API address"`
-		AppIDAuth    struct {
-			AppID  string `flag:"vault-app-id" env:"VAULT_APP_ID" default:"" description:"[DEPRECATED] The app-id to use for authentication"`
-			UserID string `flag:"vault-user-id" env:"VAULT_USER_ID" default:"" description:"[DEPRECATED] The user-id to use for authentication"`
-		}
-		AppRoleAuth struct {
+		AppRoleAuth  struct {
 			RoleID   string `flag:"vault-role-id" env:"VAULT_ROLE_ID" default:"" description:"ID of the role to use"`
 			SecretID string `flag:"vault-secret-id" env:"VAULT_SECRET_ID" default:"" description:"Corresponding secret ID to the role"`
 		}
@@ -98,23 +94,11 @@ func main() {
 		client.SetToken(loginSecret.Auth.ClientToken)
 		defer client.Auth().Token().RevokeSelf(client.Token())
 
-	case cfg.AppIDAuth.AppID != "" && cfg.AppIDAuth.UserID != "":
-		loginSecret, lserr := client.Logical().Write("auth/app-id/login/"+cfg.AppIDAuth.AppID, map[string]interface{}{
-			"user_id": cfg.AppIDAuth.UserID,
-		})
-		if lserr != nil || loginSecret.Auth == nil {
-			log.Fatalf("Unable to fetch authentication token: %s", lserr)
-		}
-
-		client.SetToken(loginSecret.Auth.ClientToken)
-		defer client.Auth().Token().RevokeSelf(client.Token())
-
 	default:
 		log.Fatalf(strings.Join([]string{
 			"[ERR] Did not find any authentication method. Try one of these:",
 			"- Specify `--vault-token` for token based authentication",
 			"- Specify `--vault-role-id` and optionally `--vault-secret-id` for AppRole authentication",
-			"- Specify `--vault-app-id` and `--vault-user-id` for deprecated AppID authentication",
 		}, "\n"))
 	}
 
