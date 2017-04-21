@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/Luzifer/vault2env",
-	"GoVersion": "go1.6",
-	"GodepVersion": "v62",
+	"GoVersion": "go1.8",
+	"GodepVersion": "v79",
 	"Deps": [
 		{
 			"ImportPath": "github.com/Luzifer/go_helpers/env",
@@ -12,6 +12,11 @@
 			"ImportPath": "github.com/Luzifer/rconfig",
 			"Comment": "v1.0.3-2-g2677653",
 			"Rev": "26776536e61487fdffbd3ce87f827177a5903f98"
+		},
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.10.0-38-g3ec0642",
+			"Rev": "3ec0642a7fb6488f65b06f9040adc67e3990296a"
 		},
 		{
 			"ImportPath": "github.com/fatih/structs",
@@ -85,6 +90,10 @@
 		{
 			"ImportPath": "github.com/spf13/pflag",
 			"Rev": "b084184666e02084b8ccb9b704bf0d79c466eb1d"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
