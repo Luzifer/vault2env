@@ -114,7 +114,13 @@ func main() {
 	for _, vaultKey := range cfg.VaultKeys {
 		data, err := client.Logical().Read(vaultKey)
 		if err != nil {
-			log.Errorf("Unable to fetch data: %s", err)
+			log.Errorf("Unable to fetch data for key %q: %s", vaultKey, err)
+			continue
+		}
+
+		if data.Data == nil {
+			log.Errorf("Vault key %q did not contain data", vaultKey)
+			continue
 		}
 
 		for k, v := range data.Data {
