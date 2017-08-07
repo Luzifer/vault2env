@@ -1,3 +1,7 @@
+# 1.0.2 / 2017-08-07
+
+  * Fix: Do not try to access data on error
+
 # 1.0.1 / 2017-04-21
 
   * Fix: Update vendored libraries
