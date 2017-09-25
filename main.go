@@ -118,6 +118,11 @@ func main() {
 			continue
 		}
 
+		if data == nil {
+			log.Errorf("Vault key %q does not exist", vaultKey)
+			continue
+		}
+
 		if data.Data == nil {
 			log.Errorf("Vault key %q did not contain data", vaultKey)
 			continue
