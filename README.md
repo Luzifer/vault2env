@@ -1,5 +1,7 @@
-![License](https://badges.fyi/github/license/Luzifer/vault2env)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Luzifer/vault2env)](https://goreportcard.com/report/github.com/Luzifer/vault2env)
+![](https://badges.fyi/github/license/Luzifer/vault2env)
+![](https://badges.fyi/github/downloads/Luzifer/vault2env)
+![](https://badges.fyi/github/latest-release/Luzifer/vault2env)
 
 # Luzifer / vault2env
 
