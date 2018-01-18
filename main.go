@@ -26,6 +26,7 @@ var (
 			Token string `flag:"vault-token" env:"VAULT_TOKEN" vardefault:"vault-token" description:"Specify a token to use instead of app-id auth"`
 		}
 		Transform      []string `flag:"transform,t" default:"" description:"Translates keys to different names (oldkey=newkey)"`
+		TransformSet   []string `flag:"transform-set" default:"" description:"Apply predefined transform sets (Available: STS)"`
 		VaultAddress   string   `flag:"vault-addr" env:"VAULT_ADDR" default:"https://127.0.0.1:8200" description:"Vault API address"`
 		VaultKeys      []string `flag:"key,k" default:"" description:"Keys to read and use for environment variables"`
 		VersionAndExit bool     `flag:"version" default:"false" description:"Print program version and exit"`
@@ -109,6 +110,14 @@ func main() {
 	}
 
 	envData := map[string]string{}
+
+	for _, setName := range cfg.TransformSet {
+		if set, ok := transformSets[setName]; ok {
+			cfg.Transform = append(cfg.Transform, set...)
+		} else {
+			log.Warnf("Transform set %q was not found, ignoring", setName)
+		}
+	}
 	transformMap := env.ListToMap(cfg.Transform)
 
 	for _, vaultKey := range cfg.VaultKeys {
@@ -143,7 +152,7 @@ func main() {
 
 	if cfg.Export {
 		for k, v := range envData {
-			fmt.Printf("export %s=\"%s\"\n", k, v)
+			fmt.Printf("export %s=%q\n", k, v)
 		}
 		return
 	}
