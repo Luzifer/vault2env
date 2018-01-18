@@ -1,3 +1,7 @@
+# 1.1.0 / 2018-01-18
+
+  * Add predefined transform sets
+
 # 1.0.3 / 2017-09-25
 
   * Fix: Don't panic if a key is not existent
