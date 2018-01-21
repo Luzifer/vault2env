@@ -1,3 +1,7 @@
+# 1.1.1 / 2018-01-21
+
+  * Fix: Reduce number of errors caused by empty transform set
+
 # 1.1.0 / 2018-01-18
 
   * Add predefined transform sets
