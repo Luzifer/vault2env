@@ -112,6 +112,10 @@ func main() {
 	envData := map[string]string{}
 
 	for _, setName := range cfg.TransformSet {
+		if setName == "" {
+			continue
+		}
+
 		if set, ok := transformSets[setName]; ok {
 			cfg.Transform = append(cfg.Transform, set...)
 		} else {
