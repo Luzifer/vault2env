@@ -11,13 +11,21 @@
 
 In general this program can either output your ENV variables to use with `eval` or similar or it can run a program with populated environment.
 
-```
-# vault2env --key=<secret path> <command>
+```console
+$ vault2env --key=<secret path> <command>
 <program is started, you see its output>
 
-# vault2env --export --key=<secret path>
+$ vault2env --export --key=<secret path>
 export ...
 ```
+
+In case you have a command with arguments you need to separate the command using double dashes, which is a feature of your shell:
+
+```console
+$ vault2env --key=<secret path> -- <command with arguments>
+```
+
+This prevents `vault2env` from interpreting and complaining about the arguments passed to the sub-command.
 
 ### Using evironment variables  
 ```bash
