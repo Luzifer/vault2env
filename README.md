@@ -19,13 +19,7 @@ $ vault2env --export --key=<secret path>
 export ...
 ```
 
-In case you have a command with arguments you need to separate the command using double dashes, which is a feature of your shell:
-
-```console
-$ vault2env --key=<secret path> -- <command with arguments>
-```
-
-This prevents `vault2env` from interpreting and complaining about the arguments passed to the sub-command.
+For further examples and "special cases" see the Wiki: [Usage Examples](https://github.com/Luzifer/vault2env/wiki/Usage-Examples)
 
 ### Using evironment variables  
 ```bash
