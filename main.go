@@ -6,12 +6,14 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 
-	"github.com/Luzifer/go_helpers/env"
-	"github.com/Luzifer/rconfig"
 	log "github.com/Sirupsen/logrus"
 	"github.com/hashicorp/vault/api"
 	"github.com/mitchellh/go-homedir"
+
+	"github.com/Luzifer/go_helpers/env"
+	"github.com/Luzifer/rconfig"
 )
 
 var (
@@ -22,6 +24,7 @@ var (
 		}
 		Export    bool   `flag:"export,e" default:"false" description:"Show export statements instead of running the command specified"`
 		LogLevel  string `flag:"log-level" default:"info" description:"Verbosity of logs to use (debug, info, warning, error, ...)"`
+		Obfuscate string `flag:"obfuscate,o" default:"asterisk" description:"Type of obfuscation (none, asterisk, hash, name)"`
 		TokenAuth struct {
 			Token string `flag:"vault-token" env:"VAULT_TOKEN" vardefault:"vault-token" description:"Specify a token to use instead of app-id auth"`
 		}
@@ -161,6 +164,8 @@ func main() {
 		return
 	}
 
+	obfuscate := prepareObfuscator(envData)
+
 	emap := env.ListToMap(os.Environ())
 	for k, v := range emap {
 		if _, ok := envData[k]; !ok {
@@ -169,11 +174,43 @@ func main() {
 	}
 
 	cmd := exec.Command(rconfig.Args()[1], rconfig.Args()[2:]...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 	cmd.Env = env.MapToList(envData)
-	if err := cmd.Run(); err != nil {
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		log.WithError(err).Fatal("Unable to get stderr pipe")
+	}
+
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.WithError(err).Fatal("Unable to get stdout pipe")
+	}
+
+	if err := cmd.Start(); err != nil {
+		log.WithError(err).Fatal("Unable to start command")
+	}
+
+	wg := new(sync.WaitGroup)
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		if err := obfuscationTransport(stdout, os.Stdout, obfuscate); err != nil {
+			log.WithError(err).Error("Failed to obfuscate stdout")
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		if err := obfuscationTransport(stderr, os.Stderr, obfuscate); err != nil {
+			log.WithError(err).Error("Failed to obfuscate stderr")
+		}
+	}()
+
+	wg.Wait()
+
+	if err := cmd.Wait(); err != nil {
 		log.Fatal("Command exitted unclean (code != 0)")
 	}
 }
