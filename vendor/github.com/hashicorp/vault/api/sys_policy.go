@@ -1,25 +1,47 @@
 package api
 
 import (
+	"context"
+	"errors"
 	"fmt"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 func (c *Sys) ListPolicies() ([]string, error) {
 	r := c.c.NewRequest("GET", "/v1/sys/policy")
-	resp, err := c.c.RawRequest(r)
+
+	ctx, cancelFunc := context.WithCancel(context.Background())
+	defer cancelFunc()
+	resp, err := c.c.RawRequestWithContext(ctx, r)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	var result listPoliciesResp
-	err = resp.DecodeJSON(&result)
-	return result.Policies, err
+	secret, err := ParseSecret(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	if secret == nil || secret.Data == nil {
+		return nil, errors.New("data from server response is empty")
+	}
+
+	var result []string
+	err = mapstructure.Decode(secret.Data["policies"], &result)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, err
 }
 
 func (c *Sys) GetPolicy(name string) (string, error) {
-	r := c.c.NewRequest("GET", fmt.Sprintf("/v1/sys/policy/%s", name))
-	resp, err := c.c.RawRequest(r)
+	r := c.c.NewRequest("GET", fmt.Sprintf("/v1/sys/policies/acl/%s", name))
+
+	ctx, cancelFunc := context.WithCancel(context.Background())
+	defer cancelFunc()
+	resp, err := c.c.RawRequestWithContext(ctx, r)
 	if resp != nil {
 		defer resp.Body.Close()
 		if resp.StatusCode == 404 {
@@ -30,9 +52,19 @@ func (c *Sys) GetPolicy(name string) (string, error) {
 		return "", err
 	}
 
-	var result getPoliciesResp
-	err = resp.DecodeJSON(&result)
-	return result.Rules, err
+	secret, err := ParseSecret(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	if secret == nil || secret.Data == nil {
+		return "", errors.New("data from server response is empty")
+	}
+
+	if policyRaw, ok := secret.Data["policy"]; ok {
+		return policyRaw.(string), nil
+	}
+
+	return "", fmt.Errorf("no policy found in response")
 }
 
 func (c *Sys) PutPolicy(name, rules string) error {
@@ -45,7 +77,9 @@ func (c *Sys) PutPolicy(name, rules string) error {
 		return err
 	}
 
-	resp, err := c.c.RawRequest(r)
+	ctx, cancelFunc := context.WithCancel(context.Background())
+	defer cancelFunc()
+	resp, err := c.c.RawRequestWithContext(ctx, r)
 	if err != nil {
 		return err
 	}
@@ -56,7 +90,10 @@ func (c *Sys) PutPolicy(name, rules string) error {
 
 func (c *Sys) DeletePolicy(name string) error {
 	r := c.c.NewRequest("DELETE", fmt.Sprintf("/v1/sys/policy/%s", name))
-	resp, err := c.c.RawRequest(r)
+
+	ctx, cancelFunc := context.WithCancel(context.Background())
+	defer cancelFunc()
+	resp, err := c.c.RawRequestWithContext(ctx, r)
 	if err == nil {
 		defer resp.Body.Close()
 	}
