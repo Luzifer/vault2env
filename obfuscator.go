@@ -7,7 +7,7 @@ import (
 	"io"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
 )
 
 func prepareObfuscator(secrets map[string]string) func(string) string {
@@ -39,12 +39,10 @@ func prepareObfuscator(secrets map[string]string) func(string) string {
 	return func(in string) string { return repl.Replace(in) }
 }
 
-func obfuscationTransport(in io.Reader, out io.Writer, obfuscate func(string) string) {
+func obfuscationTransport(in io.Reader, out io.Writer, obfuscate func(string) string) error {
 	s := bufio.NewScanner(bufio.NewReader(in))
 	for s.Scan() {
 		fmt.Fprintln(out, obfuscate(s.Text()))
 	}
-	if err := s.Err(); err != nil {
-		log.WithError(err).Error("Failed to scan in buffer")
-	}
+	return errors.Wrapf(s.Err(), "Failed to scan in buffer")
 }
