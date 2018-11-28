@@ -1,3 +1,11 @@
+# 2.0.0 / 2018-11-28
+
+  * Switch to dep for vendoring, update vendored libs
+  * [#2] Implement obfuscation of secrets in output #3
+    * This is a **breaking change**: The new default is to obfuscate the secrets in the output which means software relying on having secrets embedded in the output need to adopt for this using the `-o none` parameter to disable obfuscation.
+  * Link to usage examples in Wiki
+  * Add docs for sub-commands with arguments
+
 # 1.1.1 / 2018-01-21
 
   * Fix: Reduce number of errors caused by empty transform set
