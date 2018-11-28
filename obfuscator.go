@@ -40,7 +40,7 @@ func prepareObfuscator(secrets map[string]string) func(string) string {
 }
 
 func obfuscationTransport(in io.Reader, out io.Writer, obfuscate func(string) string) error {
-	s := bufio.NewScanner(bufio.NewReader(in))
+	s := bufio.NewScanner(in)
 	for s.Scan() {
 		fmt.Fprintln(out, obfuscate(s.Text()))
 	}
