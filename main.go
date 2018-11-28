@@ -197,14 +197,14 @@ func main() {
 	go func() {
 		defer wg.Done()
 		if err := obfuscationTransport(stdout, os.Stdout, obfuscate); err != nil {
-			log.WithError(err).Error("Failed to scan in stdout buffer")
+			log.WithError(err).Error("Failed to obfuscate stdout")
 		}
 	}()
 
 	go func() {
 		defer wg.Done()
 		if err := obfuscationTransport(stderr, os.Stderr, obfuscate); err != nil {
-			log.WithError(err).Error("Failed to scan in stderr buffer")
+			log.WithError(err).Error("Failed to obfuscate stderr")
 		}
 	}()
 
