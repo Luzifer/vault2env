@@ -1,3 +1,7 @@
+# 2.1.0 / 2020-10-18
+
+  * Switch to go modules support
+
 # 2.0.0 / 2018-11-28
 
   * Switch to dep for vendoring, update vendored libs
