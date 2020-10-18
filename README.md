@@ -2,6 +2,7 @@
 ![](https://badges.fyi/github/license/Luzifer/vault2env)
 ![](https://badges.fyi/github/downloads/Luzifer/vault2env)
 ![](https://badges.fyi/github/latest-release/Luzifer/vault2env)
+![](https://knut.in/project-status/vault2env)
 
 # Luzifer / vault2env
 
@@ -49,7 +50,3 @@ export SECOND_KEY="secondvalue"
 ```
 
 Though it's possible to use CLI parameters I strongly recommend to stick to the ENV variant as it's possible under certain conditions to read CLI parameters on a shared system using for example `ps aux`.
-
-----
-
-![project status](https://d2o84fseuhwkxk.cloudfront.net/vault2env.svg)
