@@ -8,12 +8,12 @@ import (
 	"strings"
 	"sync"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/hashicorp/vault/api"
 	"github.com/mitchellh/go-homedir"
+	log "github.com/sirupsen/logrus"
 
-	"github.com/Luzifer/go_helpers/env"
-	"github.com/Luzifer/rconfig"
+	"github.com/Luzifer/go_helpers/v2/env"
+	"github.com/Luzifer/rconfig/v2"
 )
 
 var (
