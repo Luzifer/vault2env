@@ -1,3 +1,9 @@
+# 2.2.0 / 2023-04-08
+
+  * Support `json.Number` data format
+  * Update dependencies
+  * Replace build tooling
+
 # 2.1.0 / 2020-10-18
 
   * Switch to go modules support
