@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -149,7 +150,16 @@ func main() {
 			if newKey, ok := transformMap[key]; ok {
 				key = newKey
 			}
-			envData[key] = v.(string)
+
+			switch vI := v.(type) {
+			case string:
+				envData[key] = vI
+			case json.Number:
+				envData[key] = string(vI)
+			default:
+				log.Errorf("Vault key %q.%q contained unexpected data type %T", vaultKey, k, v)
+				continue
+			}
 		}
 	}
 
