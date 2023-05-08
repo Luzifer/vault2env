@@ -1,4 +1,4 @@
-module github.com/Luzifer/vault2env
+module github.com/Luzifer/vault2env/v2
 
 go 1.20
 
