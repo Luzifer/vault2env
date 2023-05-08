@@ -1,3 +1,7 @@
+# 2.2.1 / 2023-05-08
+
+  * Bump module import path for v2.x versions
+
 # 2.2.0 / 2023-04-08
 
   * Support `json.Number` data format
