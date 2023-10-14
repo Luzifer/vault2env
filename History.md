@@ -1,3 +1,7 @@
+# 2.2.2 / 2023-10-14
+
+  * Update dependencies
+
 # 2.2.1 / 2023-05-08
 
   * Bump module import path for v2.x versions
