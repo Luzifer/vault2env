@@ -1,3 +1,8 @@
+# 2.3.0 / 2023-12-01
+
+  * Rewrite obfuscator logic not to work line-based
+  * Update dependencies, fix linter errors
+
 # 2.2.2 / 2023-10-14
 
   * Update dependencies
