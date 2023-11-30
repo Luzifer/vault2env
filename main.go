@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"sync"
 
 	"github.com/hashicorp/vault/api"
 	"github.com/mitchellh/go-homedir"
@@ -187,7 +186,21 @@ func main() {
 		return
 	}
 
-	obfuscate := prepareObfuscator(envData)
+	var (
+		stdoutObfuscate = newObfuscator(os.Stdout, envData, getReplaceFn(cfg.Obfuscate))
+		stderrObfuscate = newObfuscator(os.Stderr, envData, getReplaceFn(cfg.Obfuscate))
+	)
+
+	defer func() {
+		if err := stderrObfuscate.Close(); err != nil {
+			logrus.WithError(err).Error("closing stderr")
+		}
+	}()
+	defer func() {
+		if err := stdoutObfuscate.Close(); err != nil {
+			logrus.WithError(err).Error("closing stdout")
+		}
+	}()
 
 	emap := env.ListToMap(os.Environ())
 	for k, v := range emap {
@@ -200,40 +213,10 @@ func main() {
 	cmd.Stdin = os.Stdin
 	cmd.Env = env.MapToList(envData)
 
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		logrus.WithError(err).Fatal("getting stderr pipe")
-	}
+	cmd.Stderr = stderrObfuscate
+	cmd.Stdout = stdoutObfuscate
 
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		logrus.WithError(err).Fatal("getting stdout pipe")
-	}
-
-	if err := cmd.Start(); err != nil {
-		logrus.WithError(err).Fatal("starting command")
-	}
-
-	wg := new(sync.WaitGroup)
-	wg.Add(2) //nolint:gomnd
-
-	go func() {
-		defer wg.Done()
-		if err := obfuscationTransport(stdout, os.Stdout, obfuscate); err != nil {
-			logrus.WithError(err).Error("obfuscating stdout")
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-		if err := obfuscationTransport(stderr, os.Stderr, obfuscate); err != nil {
-			logrus.WithError(err).Error("obfuscating stderr")
-		}
-	}()
-
-	wg.Wait()
-
-	if err := cmd.Wait(); err != nil {
-		logrus.WithError(err).Fatal("error during command execution")
+	if err := cmd.Run(); err != nil {
+		logrus.WithError(err).Fatal("running command")
 	}
 }

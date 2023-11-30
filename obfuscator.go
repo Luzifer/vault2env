@@ -1,48 +1,28 @@
 package main
 
 import (
-	"bufio"
 	"crypto/sha256"
 	"fmt"
-	"io"
-	"strings"
-
-	"github.com/pkg/errors"
 )
 
-func prepareObfuscator(secrets map[string]string) func(string) string {
-	var prepare func(name, secret string) string
+func replaceAsterisk(_, _ string) string { return "****" }
+func replaceHash(_, secret string) string {
+	return fmt.Sprintf("sha256:%x", sha256.Sum256([]byte(secret)))
+}
+func replaceName(name, _ string) string { return name }
 
-	switch cfg.Obfuscate {
+func getReplaceFn(name string) replaceFn {
+	switch name {
 	case "asterisk":
-		prepare = func(name, secret string) string { return "****" }
+		return replaceAsterisk
 
 	case "hash":
-		prepare = func(name, secret string) string { return fmt.Sprintf("sha256:%x", sha256.Sum256([]byte(secret))) }
+		return replaceHash
 
 	case "name":
-		prepare = func(name, secret string) string { return name }
+		return replaceName
 
 	default:
-		return func(in string) string { return in }
+		return nil
 	}
-
-	replacements := []string{}
-
-	for k, v := range secrets {
-		if k != "" && v != "" {
-			replacements = append(replacements, v, prepare(k, v))
-		}
-	}
-	repl := strings.NewReplacer(replacements...)
-
-	return func(in string) string { return repl.Replace(in) }
-}
-
-func obfuscationTransport(in io.Reader, out io.Writer, obfuscate func(string) string) error {
-	s := bufio.NewScanner(in)
-	for s.Scan() {
-		fmt.Fprintln(out, obfuscate(s.Text()))
-	}
-	return errors.Wrapf(s.Err(), "Failed to scan in buffer")
 }
