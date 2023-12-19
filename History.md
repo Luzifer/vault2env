@@ -1,3 +1,7 @@
+# 2.3.1 / 2023-12-19
+
+  * Update dependencies
+
 # 2.3.0 / 2023-12-01
 
   * Rewrite obfuscator logic not to work line-based
